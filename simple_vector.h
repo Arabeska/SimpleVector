@@ -31,13 +31,11 @@ public:
 
     SimpleVector() noexcept = default;
 
-    // Создаёт вектор из size элементов, инициализированных значением value
     SimpleVector(size_t size, const Type& value)
         : items_(size), size_(size), capacity_(size) {
         std::fill(items_.Get(), items_.Get() + size, value);
     }
 
-    // Создаёт вектор из size элементов, инициализированных значением по умолчанию
     explicit SimpleVector(size_t size)
         : SimpleVector(size, Type()) {
     }
@@ -81,35 +79,28 @@ public:
 
     SimpleVector& operator=(SimpleVector&&) = default;
 
-    // Возвращает количество элементов в массиве
     size_t GetSize() const noexcept {
         return size_;
     }
 
-    // Возвращает вместимость массива
     size_t GetCapacity() const noexcept {
         return capacity_;
     }
 
-    // Сообщает, пустой ли массив
     bool IsEmpty() const noexcept {
         return size_ == 0;
     }
 
-    // Возвращает ссылку на элемент с индексом index
     Type& operator[](size_t index) noexcept {
         assert(index < size_);
         return items_[index];
     }
 
-    // Возвращает константную ссылку на элемент с индексом index
     const Type& operator[](size_t index) const noexcept {
         assert(index < size_);
         return items_[index];
     }
 
-    // Возвращает константную ссылку на элемент с индексом index
-    // Выбрасывает исключение std::out_of_range, если index >= size
     Type& At(size_t index) {
         if (index >= size_) {
             using namespace std;
@@ -118,8 +109,6 @@ public:
         return items_[index];
     }
 
-    // Возвращает константную ссылку на элемент с индексом index
-    // Выбрасывает исключение std::out_of_range, если index >= size
     const Type& At(size_t index) const {
         if (index >= size_) {
             using namespace std;
@@ -128,44 +117,30 @@ public:
         return items_[index];
     }
 
-    // Возвращает итератор на начало массива
-    // Для пустого массива может быть равен (или не равен) nullptr
     Iterator begin() noexcept {
         return items_.Get();
     }
 
-    // Возвращает итератор на элемент, следующий за последним
-    // Для пустого массива может быть равен (или не равен) nullptr
     Iterator end() noexcept {
         return (items_.Get() + size_);
     }
 
-    // Возвращает константный итератор на начало массива
-    // Для пустого массива может быть равен (или не равен) nullptr
     ConstIterator begin() const noexcept {
         return items_.Get();
     }
 
-    // Возвращает итератор на элемент, следующий за последним
-    // Для пустого массива может быть равен (или не равен) nullptr
     ConstIterator end() const noexcept {
         return (items_.Get() + size_);
     }
 
-    // Возвращает константный итератор на начало массива
-    // Для пустого массива может быть равен (или не равен) nullptr
     ConstIterator cbegin() const noexcept {
         return items_.Get();
     }
 
-    // Возвращает итератор на элемент, следующий за последним
-    // Для пустого массива может быть равен (или не равен) nullptr
     ConstIterator cend() const noexcept {
         return (items_.Get() + size_);
     }
 
-    // Добавляет элемент в конец вектора
-    // При нехватке места увеличивает вдвое вместимость вектора
     void PushBack(const Type& item) {
         if (size_ == capacity_) {
             ReCapacity(std::max(size_ * 2, static_cast<size_t>(1)));
@@ -182,10 +157,6 @@ public:
         size_++;
     }
 
-    // Вставляет значение value в позицию pos.
-    // Возвращает итератор на вставленное значение
-    // Если перед вставкой значения вектор был заполнен полностью,
-    // вместимость вектора должна увеличиться вдвое, а для вектора вместимостью 0 стать равной 1
     Iterator Insert(ConstIterator pos, const Type& value) {
         assert(pos >= begin() && pos <= end());
         auto step_ = pos - begin();
@@ -212,13 +183,11 @@ public:
         return it;
     }
 
-    // "Удаляет" последний элемент вектора. Вектор не должен быть пустым
     void PopBack() noexcept {
         assert(!IsEmpty());
         size_--;
     }
 
-    // Удаляет элемент вектора в указанной позиции
     Iterator Erase(ConstIterator pos) {
         assert(pos >= begin() && pos < end());
         auto step_ = pos - begin();
@@ -228,15 +197,12 @@ public:
         return (begin() + step_);
     }
 
-    // Обменивает значение с другим вектором
     void swap(SimpleVector& other) noexcept {
         items_.swap(other.items_);
         std::swap(other.size_, size_);
         std::swap(other.capacity_, capacity_);
     }
 
-    // Изменяет размер массива.
-    // При увеличении размера новые элементы получают значение по умолчанию для типа Type
     void Resize(size_t new_size) {
         if (size_ < new_size) {
             if (new_size <= capacity_)
@@ -253,7 +219,6 @@ public:
         }
     }
 
-    // Обнуляет размер массива, не изменяя его вместимость
     void Clear() noexcept {
         size_ = 0;
     }
